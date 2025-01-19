@@ -333,7 +333,7 @@ class IOSet {
             if (ifs.fail()) {
                 return "FALSE";
             }
-            while (getline(ifs, str)) {
+            while (std::getline(ifs, str)) {
                 fileData = fileData + str + "\n";
             }
             return fileData;
@@ -343,41 +343,41 @@ class IOSet {
             if (mode == "a"){
                 if (filePath == this->appPathNoEX + ".cpp" || filePath == this->appPath){
                     int ans;
-                    ans = MsgBox("警告", "このプログラムの重要ファイルです。\n書き換えますか？", 4, 1, 0);
+                    ans = this->MsgBox("警告", "このプログラムの重要ファイルです。\n書き換えますか？", 4, 1, 0);
                     if (ans == IDNO){
-                        print("アクセス拒否されました。");
+                        this->print("アクセス拒否されました。");
                         return 2;
                     }
                 }
                 std::string sdata = read_file(filePath); //データ読み込み
                 std::ofstream ofs(filePath); //空ファイルにする
                 if (ofs.fail()){
-                    print("FALSE");
+                    this->print("FALSE");
                     return -1;
                 }
                 ofs << sdata << data << std::endl;
-                print(filePath + "に追加書き込み完了しました。");
+                this->print(filePath + "に追加書き込み完了しました。");
                 return 0;
             }
             else if (mode == "w"){
                 if (filePath == this->appPathNoEX + ".cpp" || filePath == this->appPath){
                     int ans;
-                    ans = MsgBox("警告", "このプログラムの重要ファイルです。\nエディタで書き換えてください！！", 0, 4, 0);
-                    print("アクセス拒否されました。");
+                    ans = this->MsgBox("警告", "このプログラムの重要ファイルです。\nエディタで書き換えてください！！", 0, 4, 0);
+                    this->print("アクセス拒否されました。");
                     return -1;
                 }
                 std::ofstream ofs(filePath); //空ファイルにする
                 if (ofs.fail()){
-                    print("FALSE");
-                    print("書き込み失敗");
+                    this->print("FALSE");
+                    this->print("書き込み失敗");
                     return -1;
                 }
                 ofs << data << std::endl;
-                print(filePath + "に書き込み完了しました。");
+                this->print(filePath + "に書き込み完了しました。");
                 return 0;
             }
             else{
-                print("モードが違います。");
+                this->print("モードが違います。");
                 return -1;
             }
         }
