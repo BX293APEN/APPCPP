@@ -21,25 +21,25 @@ class APP{
         
     private:
         // •”•i–¼
-        static constexpr char
-            windowClassName[]       = "WINDOW",
-            comboClassName[]        = "COMBOBOX",
-            buttonClassName[]       = "BUTTON",
-            textareaClassName[]     = "EDIT";
-
+        char
+            windowClassName     [256]   = "WINDOW",
+            comboClassName      [256]   = "COMBOBOX",
+            buttonClassName     [256]   = "BUTTON",
+            textareaClassName   [256]   = "EDIT";
+            
         // ƒ{ƒ^ƒ“ID
         static constexpr int 
-            ID_LIST                 = 2000,
-            ID_STORE                = 2001,
-            ID_SHUTOP               = 2002,
-            ID_SANSHO               = 2003,
-            ID_CMDEXE               = 2004,
-            ID_TIME                 = 2005,
-            ID_MSGCREATE            = 2006,
-            ID_SEARCH               = 2007,
-            ID_SEARCHBOX            = 2008,
-            ID_CMDBOX               = 2009,
-            ID_PATH                 = 2010;
+            ID_LIST                     = 2000,
+            ID_STORE                    = 2001,
+            ID_SHUTOP                   = 2002,
+            ID_SANSHO                   = 2003,
+            ID_CMDEXE                   = 2004,
+            ID_TIME                     = 2005,
+            ID_MSGCREATE                = 2006,
+            ID_SEARCH                   = 2007,
+            ID_SEARCHBOX                = 2008,
+            ID_CMDBOX                   = 2009,
+            ID_PATH                     = 2010;
         
         static LRESULT CALLBACK WndProc(HWND window , UINT requestMsg , WPARAM wp , LPARAM lp) {
             int msgVal, mbButton;
