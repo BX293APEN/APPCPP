@@ -22,6 +22,7 @@
 #include <direct.h>
 #include <chrono>
 #include <random>
+#include <unordered_map>
 
 #define _USE_MATH_DEFINES //数値演算定数を定義
 #include <cmath>
@@ -46,7 +47,7 @@ class str : public std::string{
             int i = 0;
             std::string stringText = *this;
             std::vector<std::string> result;
-            std::vector<int> subStrNum = find_all(del);
+            std::vector<int> subStrNum = this->find_all(del);
             while (first < stringText.size()) {
                 std::string subStr(stringText, first, subStrNum[i] - first);
                 result.push_back(subStr); //配列の末尾に要素を追加する
@@ -73,8 +74,8 @@ class str : public std::string{
 
         str& operator+(const str &targetText) {
             str strText = targetText;
-            for(int i = 0; i < strText.size(); i++){
-                this -> push_back(strText[i]);
+            for(auto& s : strText){
+                this -> push_back(s);
             }
             return *this;
         }
@@ -82,8 +83,8 @@ class str : public std::string{
         str& operator= (std::string target){
             std::string targetString = target;
             this -> clear();
-            for(int i = 0; i < targetString.size(); i++){
-                this -> push_back(targetString[i]);
+            for(auto& s : targetString){
+                this -> push_back(s);
             }
             return *this;
         }
@@ -96,35 +97,44 @@ class vec : public std::vector<std::string>{
         std::string to_str (){
             std::string ans = "";
             std::vector<std::string> sourceVec = *this;
-            for(int i = 0; i < sourceVec.size(); i++){
-                ans = ans + sourceVec[i];
+            for(std::string& s : sourceVec){
+                ans = ans + s;
             }
             return ans;
         }
         std::vector<std::string> to_vec (){
             return (std::vector<std::string>)*this;
         }
+
+        int vec_compare(std::vector<std::string> target){
+            std::vector<std::string> targetVec = target;
+            std::vector<std::string> sourceVec = *this;
+            std::sort(targetVec.begin(), targetVec.end());
+            std::sort(sourceVec.begin(), sourceVec.end());
+            return std::equal(targetVec.begin(), targetVec.end(), sourceVec.begin(), sourceVec.end());
+        }
+
         vec& operator= (std::vector<std::string> target){
             std::vector<std::string> targetVec = target;
             this -> clear();
-            for(int i = 0; i < targetVec.size(); i++){
-                this -> push_back(targetVec[i]);
+            for(std::string& v : targetVec){
+                this -> push_back(v);
             }
             return *this;
         }
 
         vec& operator= (std::vector<int> targetVec){
             this -> clear();
-            for(int i = 0; i < targetVec.size(); i++){
-                this -> push_back(std::to_string(targetVec[i]));
+            for(int& v : targetVec){
+                this -> push_back(std::to_string(v));
             }
             return *this;
         }
 
         vec& operator= (std::vector<double> targetVec){
             this -> clear();
-            for(int i = 0; i < targetVec.size(); i++){
-                this -> push_back(std::to_string(targetVec[i]));
+            for(double& v : targetVec){
+                this -> push_back(std::to_string(v));
             }
             return *this;
         }

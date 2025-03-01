@@ -20,13 +20,6 @@ class APP{
         HWND appBody; //HINSTANCEの下に確保
         
     private:
-        // 部品名
-        char
-            windowClassName     [256]   = "WINDOW",
-            comboClassName      [256]   = "COMBOBOX",
-            buttonClassName     [256]   = "BUTTON",
-            textareaClassName   [256]   = "EDIT";
-            
         // ボタンID
         static constexpr int 
             ID_LIST                     = 2000,
@@ -40,6 +33,9 @@ class APP{
             ID_SEARCHBOX                = 2008,
             ID_CMDBOX                   = 2009,
             ID_PATH                     = 2010;
+        
+        // 部品名
+        std::string windowClassName = "WINDOW", comboClassName = "COMBOBOX", buttonClassName = "BUTTON", textareaClassName = "EDIT";
         
         static LRESULT CALLBACK WndProc(HWND window , UINT requestMsg , WPARAM wp , LPARAM lp) {
             int msgVal, mbButton;
@@ -164,30 +160,30 @@ class APP{
                             msgVal = io.MsgBox("確認","内容を保存しますか？",4,3,0);
                             switch (msgVal){
                                 case IDYES:
-                                    GetWindowText(windowParts.fileContent , textVal , 32768);
-                                    GetWindowText(windowParts.filePath , fileVal , 32768);
+                                    GetWindowText(windowParts.fileContent , textVal , sizeof(textVal));
+                                    GetWindowText(windowParts.filePath , fileVal , sizeof(fileVal));
                                     io.write_file(std::string(fileVal), std::string(textVal), "w");
                             }
                             break;
 
                         case APP::ID_SANSHO:
                             SetWindowText(window,"参照");
-                            GetWindowText(windowParts.filePath , fileVal , 32768);
+                            GetWindowText(windowParts.filePath , fileVal , sizeof(fileVal));
                             fileData = io.read_file(std::string(fileVal));
                             SetWindowText(windowParts.fileContent, fileData.c_str());
                             break;
 
                         case APP::ID_CMDEXE:
                             SetWindowText(window,"コマンドプロンプト実行");
-                            GetWindowText(windowParts.cmdPrompt, cmdVal, 32768);
+                            GetWindowText(windowParts.cmdPrompt, cmdVal, sizeof(cmdVal));
                             io.cmd(std::string(cmdVal));/* 実行 */
                             break;
 
                         case APP::ID_MSGCREATE:
                             SetWindowText(window,"メッセージボックス生成");
 
-                            GetWindowText(windowParts.msgTex , tex , 32768);
-                            GetWindowText(windowParts.msgTit , tit , 32768);
+                            GetWindowText(windowParts.msgTex , tex , sizeof(tex));
+                            GetWindowText(windowParts.msgTit , tit , sizeof(tit));
 
                             if      (SendMessage(windowParts.radio0, BM_GETCHECK, 0, 0))    mbButton = MB_OK;
                             else if (SendMessage(windowParts.radio1, BM_GETCHECK, 0, 0))    mbButton = MB_OKCANCEL;
@@ -224,7 +220,7 @@ class APP{
                                     url = "google.co.jp/";
                                     break;
                             }
-                            GetWindowText(windowParts.browserQuery , searchVal , 32768);
+                            GetWindowText(windowParts.browserQuery , searchVal , sizeof(searchVal));
                             url = "start www."+ url +"search?q=" + std::string(searchVal);
                             io.cmd(url);
                             break;
@@ -251,7 +247,7 @@ class APP{
             
             /* リストボックス */
             windowParts.searchEngine = CreateWindow(
-                this->comboClassName,
+                this->comboClassName.c_str(),
                 NULL, 
                 WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST , 
                 20 , 10 , 150 , 150 , 
@@ -266,7 +262,7 @@ class APP{
 
             /* テキストエリア生成 */
             windowParts.browserQuery = CreateWindow(
-                this->textareaClassName,
+                this->textareaClassName.c_str(),
                 NULL,
                 WS_VISIBLE | WS_CHILD | ES_MULTILINE | ES_LEFT | ES_AUTOHSCROLL | WS_HSCROLL,
                 180,10,620,40,
@@ -277,7 +273,7 @@ class APP{
 
             /* ボタン生成 */
             CreateWindow(
-                this->buttonClassName,
+                this->buttonClassName.c_str(),
                 TEXT("search"),
                 WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON ,
                 820 , 10 , 100 , 30 ,
@@ -286,7 +282,7 @@ class APP{
 
             /* グループボックス生成 */
             windowParts.powerOption = CreateWindow(
-                this->buttonClassName, 
+                this->buttonClassName.c_str(), 
                 "電源オプション",
                 WS_CHILD | WS_VISIBLE | BS_GROUPBOX ,
                 20 , 50 , 240 , 120 ,
@@ -296,7 +292,7 @@ class APP{
 
             /* リストボックス */
             windowParts.powerOptionList = CreateWindow(
-                this->comboClassName,
+                this->comboClassName.c_str(),
                 NULL, 
                 WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST , 
                 40 , 75 , 200 , 200 , 
@@ -309,7 +305,7 @@ class APP{
 
             /* テキストエリア生成 */
             windowParts.second = CreateWindow(
-                this->textareaClassName,
+                this->textareaClassName.c_str(),
                 NULL,
                 WS_VISIBLE | WS_CHILD | ES_MULTILINE | ES_RIGHT | ES_NUMBER,
                 40,110,30,20,
@@ -321,7 +317,7 @@ class APP{
 
             /* ボタン生成 */
             CreateWindow(
-                this->buttonClassName,
+                this->buttonClassName.c_str(),
                 TEXT("決定"),
                 WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON ,
                 140 , 130 , 100 , 30 ,
@@ -330,7 +326,7 @@ class APP{
 
             /* グループボックス生成 */
             textEdit = CreateWindow(
-                this->buttonClassName , 
+                this->buttonClassName.c_str() , 
                 "テキスト編集",
                 WS_CHILD | WS_VISIBLE | BS_GROUPBOX ,
                 20 , 190 , 500 , 380 ,
@@ -339,7 +335,7 @@ class APP{
 
             /* テキストエリア生成 */
             windowParts.filePath = CreateWindow(
-                this->textareaClassName,
+                this->textareaClassName.c_str(),
                 NULL,
                 WS_VISIBLE | WS_CHILD | ES_MULTILINE | ES_LEFT | ES_AUTOHSCROLL | WS_HSCROLL,
                 40,215,460,40,
@@ -351,7 +347,7 @@ class APP{
 
             /* ボタン生成 */
             CreateWindow(
-                this->buttonClassName,
+                this->buttonClassName.c_str(),
                 TEXT("参照"),
                 WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON ,
                 370 , 260 , 100 , 30 ,
@@ -361,7 +357,7 @@ class APP{
 
             /* テキストエリア生成 */
             windowParts.fileContent = CreateWindow(
-                this->textareaClassName,
+                this->textareaClassName.c_str(),
                 NULL,
                 WS_VISIBLE | WS_CHILD | ES_MULTILINE | ES_LEFT | ES_AUTOVSCROLL | WS_VSCROLL,
                 40,310,400,200,
@@ -373,7 +369,7 @@ class APP{
 
             /* ボタン生成 */
             CreateWindow(
-                this->buttonClassName,
+                this->buttonClassName.c_str(),
                 TEXT("保存"),
                 WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON ,
                 370 , 520 , 100 , 30 ,
@@ -382,7 +378,7 @@ class APP{
 
             /* グループボックス生成 */
             cmdGroup = CreateWindow(
-                this->buttonClassName, 
+                this->buttonClassName.c_str(), 
                 "コマンドプロンプト",
                 WS_CHILD | WS_VISIBLE | BS_GROUPBOX ,
                 270 , 50 , 670 , 120 ,
@@ -391,7 +387,7 @@ class APP{
 
             /* テキストエリア生成 */
             windowParts.cmdPrompt = CreateWindow(
-                this->textareaClassName,
+                this->textareaClassName.c_str(),
                 NULL,
                 WS_VISIBLE | WS_CHILD | ES_MULTILINE | ES_LEFT | ES_AUTOHSCROLL | WS_HSCROLL,
                 280 + 8*(std::string(io.pwd() + " >   ").size()), 75, 910-(280 + 8*(std::string(io.pwd() + " >   ").size()) - 4), 40,
@@ -400,7 +396,7 @@ class APP{
 
             /* ボタン生成 */
             CreateWindow(
-                this->buttonClassName,
+                this->buttonClassName.c_str(),
                 TEXT("実行"),
                 WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON ,
                 720 , 125 , 100 , 30 ,
@@ -409,7 +405,7 @@ class APP{
 
             /* グループボックス生成 */
             dialogGroup = CreateWindow(
-                this->buttonClassName, 
+                this->buttonClassName.c_str(), 
                 "メッセージボックス作成",
                 WS_CHILD | WS_VISIBLE | BS_GROUPBOX ,
                 535 , 190 , 405 , 380 ,
@@ -418,7 +414,7 @@ class APP{
 
             /* グループボックス生成 */
             dialogSettings = CreateWindow(
-                this->buttonClassName ,
+                this->buttonClassName.c_str() ,
                 "設定" ,
                 WS_CHILD | WS_VISIBLE | BS_GROUPBOX  ,
                 545 , 213 , 390 , 145 ,
@@ -427,7 +423,7 @@ class APP{
 
             /* リストボックス */
             windowParts.dialogIcon = CreateWindow(
-                this->comboClassName,
+                this->comboClassName.c_str(),
                 NULL, 
                 WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST , 
                 560 , 240 , 130 , 130 , 
@@ -443,7 +439,7 @@ class APP{
 
             /* ラジオボタン生成 */
             windowParts.radio0 = CreateWindow(
-                this->buttonClassName,
+                this->buttonClassName.c_str(),
                 TEXT("[OK]") ,
                 WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON | WS_GROUP,
                 560 , 265 , 160 , 30 ,
@@ -452,7 +448,7 @@ class APP{
 
             /* ラジオボタン生成 */
             windowParts.radio1 = CreateWindow(
-                this->buttonClassName,
+                this->buttonClassName.c_str(),
                 TEXT("[OK][キャンセル]") ,
                 WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON ,
                 560 , 295 , 160 , 30 ,
@@ -461,7 +457,7 @@ class APP{
 
             /* ラジオボタン生成 */
             windowParts.radio2 = CreateWindow(
-                this->buttonClassName,
+                this->buttonClassName.c_str(),
                 TEXT("[はい][いいえ]") ,
                 WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON ,
                 560 , 325 , 160 , 30 ,
@@ -471,7 +467,7 @@ class APP{
 
             /* ラジオボタン生成 */
             windowParts.radio3 = CreateWindow(
-                this->buttonClassName,
+                this->buttonClassName.c_str(),
                 TEXT("[はい][いいえ][キャンセル]"),
                 WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON ,
                 720 , 235 , 210 , 30 ,
@@ -480,7 +476,7 @@ class APP{
 
             /* ラジオボタン生成 */
             windowParts.radio4 = CreateWindow(
-                this->buttonClassName,
+                this->buttonClassName.c_str(),
                 TEXT("[中止][再試行][無視]"),
                 WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON ,
                 720 , 265 , 200 , 30 ,
@@ -489,7 +485,7 @@ class APP{
 
             /* ラジオボタン生成 */
             windowParts.radio5 = CreateWindow(
-                this->buttonClassName,
+                this->buttonClassName.c_str(),
                 TEXT("[再試行][キャンセル]"),
                 WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON ,
                 720 , 295 , 200 , 30 ,
@@ -498,7 +494,7 @@ class APP{
 
             /* チェックボックス生成 */
             windowParts.addHelp = CreateWindow(
-                this->buttonClassName ,
+                this->buttonClassName.c_str() ,
                 TEXT("[ヘルプ]") ,
                 WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX ,
                 720 , 325 , 200 , 30 ,
@@ -507,7 +503,7 @@ class APP{
 
             /* テキストエリア生成 */
             windowParts.msgTit = CreateWindow(
-                this->textareaClassName,
+                this->textareaClassName.c_str(),
                 NULL,
                 WS_VISIBLE | WS_CHILD | ES_MULTILINE | ES_LEFT | ES_AUTOHSCROLL | WS_HSCROLL,
                 550,365,350,40,
@@ -519,7 +515,7 @@ class APP{
 
             /* テキストエリア生成 */
             windowParts.msgTex = CreateWindow(
-                this->textareaClassName,
+                this->textareaClassName.c_str(),
                 NULL,
                 WS_VISIBLE | WS_CHILD | ES_MULTILINE | ES_LEFT | ES_AUTOVSCROLL | WS_VSCROLL,
                 550,415,270,140,
@@ -530,7 +526,7 @@ class APP{
 
             /* ボタン生成 */
             CreateWindow(
-                this->buttonClassName,
+                this->buttonClassName.c_str(),
                 TEXT("作成"),
                 WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON ,
                 830 , 525 , 100 , 30 ,
@@ -555,7 +551,7 @@ class APP{
             this->winc.hCursor              = LoadCursor(NULL , IDC_ARROW);
             this->winc.hbrBackground        = (HBRUSH)CreateSolidBrush( RGB( 234, 234, 234 ) );
             this->winc.lpszMenuName         = NULL;
-            this->winc.lpszClassName        = this->windowClassName;
+            this->winc.lpszClassName        = this->windowClassName.c_str();
 
             if (!RegisterClass(&this->winc)){
                 return;
