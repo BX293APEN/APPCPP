@@ -36,7 +36,7 @@ class str : public std::string{
         using std::string::operator=;
         using std::string::operator+=;
 
-        str() = default;
+        //str() = default;
         str(std::string target) : std::string(target){}
 
         std::string replace_all(std::string target, std::string replacement){
@@ -125,7 +125,7 @@ class vec : public std::vector<std::string>{
     public:
         using std::vector<std::string>::vector;
         using std::vector<std::string>::operator=;
-        vec() = default;
+        //vec() = default;
         vec(std::vector<std::string> target) : std::vector<std::string>(target){}
 
         std::string to_str (){
